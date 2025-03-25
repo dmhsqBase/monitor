@@ -1,0 +1,44 @@
+{
+  "name": "@monitor/core",
+  "version": "1.0.0",
+  "description": "Core library for monitor system",
+  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/monitor.git",
+    "directory": "packages/core"
+  },
+  "keywords": [
+    "monitor",
+    "core",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yourusername/monitor/issues"
+  },
+  "homepage": "https://github.com/yourusername/monitor/tree/main/packages/core#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@monitor/utils": "workspace:*"
+  },
+  "devDependencies": {}
+} 

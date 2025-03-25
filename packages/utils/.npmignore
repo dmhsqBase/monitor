@@ -1,0 +1,26 @@
+# 源码 (除非使用 "files" 字段)
+src/
+
+# 开发配置
+.editorconfig
+.eslintrc*
+.prettierrc*
+rollup.config.js
+tsconfig.json
+jest.config.js
+
+# 测试
+__tests__/
+coverage/
+
+# 杂项
+.git
+.DS_Store
+node_modules
+*.log
+.cache
+.rollup.cache
+
+# IDE
+.idea
+.vscode 

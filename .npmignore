@@ -1,0 +1,29 @@
+# 源码
+src/
+
+# 开发配置
+.editorconfig
+.eslintrc*
+.prettierrc*
+rollup.config.js
+tsconfig.json
+jest.config.js
+
+# 测试
+__tests__/
+coverage/
+
+# 杂项
+.git
+.github
+.gitlab
+.DS_Store
+node_modules
+.pnpm-store
+*.log
+.cache
+.rollup.cache
+
+# IDE
+.idea
+.vscode
