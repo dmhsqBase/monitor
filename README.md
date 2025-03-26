@@ -38,6 +38,37 @@
 ./update-versions.js major
 ```
 
+### 使用GitHub Actions自动发布
+
+项目配置了GitHub Actions用于自动构建和发布包。发布流程如下：
+
+1. 使用提供的脚本更新版本号：
+   ```bash
+   ./update-versions.js [patch|minor|major]
+   ```
+
+2. 提交更改到Git仓库：
+   ```bash
+   git add .
+   git commit -m "chore: 更新版本至x.y.z"
+   git push
+   ```
+
+3. 创建并推送版本标签：
+   ```bash
+   # 使用工具脚本自动创建和推送标签
+   ./create-release.js
+   
+   # 或手动创建和推送标签
+   git tag -a vX.Y.Z -m "vX.Y.Z"
+   git push origin vX.Y.Z
+   ```
+
+4. GitHub Actions将自动执行以下操作：
+   - 构建所有包
+   - 发布到npm
+   - 创建GitHub Release并附带更新日志
+
 ## 包更新顺序
 
 脚本会按照依赖关系顺序更新各个包：
@@ -46,6 +77,13 @@
 2. `@dmhsq_monitor/core` - 核心库，依赖 utils
 3. `@dmhsq_monitor/processor` - 处理器库，依赖 core 和 utils
 4. `@dmhsq_monitor/web` - Web监控库，依赖所有其他包
+
+## CI/CD流程
+
+本项目使用GitHub Actions实现CI/CD：
+
+- **CI流程**: 每次推送代码到`main`、`master`、`dev`、`develop`分支或创建针对这些分支的PR时，自动运行linting、类型检查、构建和测试
+- **CD流程**: 当推送带有`v`前缀的标签（如`v1.0.0`）时，自动构建并发布包到npm
 
 ## 技术说明
 
@@ -56,5 +94,6 @@
 ## 注意事项
 
 - 确保已登录npm账号 (`npm login`)
+- 确保在GitHub仓库设置中添加了`NPM_TOKEN`秘密变量
 - 确保有网络连接
 - 确保所有包的代码都已经提交到版本控制系统 

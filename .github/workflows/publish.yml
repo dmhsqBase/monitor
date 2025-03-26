@@ -1,34 +1,109 @@
-name: Publish to NPM
+name: Publish Packages
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - 'v*'  # 当推送带有 v 前缀的标签时触发，如 v1.0.0
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-        registry-url: 'https://registry.npmjs.org'
-        
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 获取完整的 git 历史用于版本比较
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
       
-    - name: Build
-      run: pnpm build
+      - name: Check version changes
+        id: check_versions
+        run: |
+          # 获取当前标签名称并解析版本号
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          echo "Tag name: $TAG_NAME"
+          
+          # 检查版本号是否与标签匹配
+          UTILS_VERSION=$(node -p "require('./packages/utils/package.json').version")
+          CORE_VERSION=$(node -p "require('./packages/core/package.json').version")
+          PROCESSOR_VERSION=$(node -p "require('./packages/processor/package.json').version")
+          WEB_VERSION=$(node -p "require('./packages/web/package.json').version")
+          
+          echo "Utils version: $UTILS_VERSION"
+          echo "Core version: $CORE_VERSION"
+          echo "Processor version: $PROCESSOR_VERSION"
+          echo "Web version: $WEB_VERSION"
+          
+          echo "::set-output name=utils_version::$UTILS_VERSION"
+          echo "::set-output name=core_version::$CORE_VERSION"
+          echo "::set-output name=processor_version::$PROCESSOR_VERSION"
+          echo "::set-output name=web_version::$WEB_VERSION"
       
-    - name: Publish to NPM
-      run: pnpm publish -r --access public --no-git-checks
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 
+      - name: Build packages
+        run: |
+          # 按依赖顺序构建所有包
+          cd packages/utils && npm run build
+          cd ../core && npm run build
+          cd ../processor && npm run build
+          cd ../web && npm run build
+          
+      - name: Create Release Notes
+        id: release_notes
+        run: |
+          echo "### 版本更新内容" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          echo "#### @dmhsq_monitor/utils@${{ steps.check_versions.outputs.utils_version }}" >> RELEASE_NOTES.md
+          node -e "const changelog = require('./packages/utils/package.json').changelog['${{ steps.check_versions.outputs.utils_version }}'] || []; changelog.forEach(item => console.log('- ' + item))" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          echo "#### @dmhsq_monitor/core@${{ steps.check_versions.outputs.core_version }}" >> RELEASE_NOTES.md
+          node -e "const changelog = require('./packages/core/package.json').changelog['${{ steps.check_versions.outputs.core_version }}'] || []; changelog.forEach(item => console.log('- ' + item))" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          echo "#### @dmhsq_monitor/processor@${{ steps.check_versions.outputs.processor_version }}" >> RELEASE_NOTES.md
+          node -e "const changelog = require('./packages/processor/package.json').changelog['${{ steps.check_versions.outputs.processor_version }}'] || []; changelog.forEach(item => console.log('- ' + item))" >> RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          
+          echo "#### @dmhsq_monitor/web@${{ steps.check_versions.outputs.web_version }}" >> RELEASE_NOTES.md
+          node -e "const changelog = require('./packages/web/package.json').changelog['${{ steps.check_versions.outputs.web_version }}'] || []; changelog.forEach(item => console.log('- ' + item))" >> RELEASE_NOTES.md
+          
+          cat RELEASE_NOTES.md
+          
+      - name: Publish utils package
+        working-directory: ./packages/utils
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Publish core package
+        working-directory: ./packages/core
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Publish processor package
+        working-directory: ./packages/processor
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Publish web package
+        working-directory: ./packages/web
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE_NOTES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
