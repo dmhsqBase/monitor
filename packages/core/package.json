@@ -1,5 +1,5 @@
 {
-  "name": "@monitor/core",
+  "name": "@dmhsq_monitor/core",
   "version": "1.0.0",
   "description": "Core library for monitor system",
   "type": "module",
@@ -38,7 +38,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@monitor/utils": "workspace:*"
+    "@dmhsq_monitor/utils": "workspace:*"
   },
   "devDependencies": {}
 } 

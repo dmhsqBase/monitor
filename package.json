@@ -1,5 +1,5 @@
 {
-  "name": "monitor",
+  "name": "@dmhsq_monitor/root",
   "version": "1.0.0",
   "private": true,
   "description": "A monitoring system with multiple packages",

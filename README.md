@@ -4,11 +4,11 @@
 
 ## 项目结构
 
-- **@monitor/utils**: 工具库，提供基础工具函数
-- **@monitor/core**: 核心库，提供监控系统的基础功能
-- **@monitor/processor**: 加工库，处理和转换监控数据
-- **@monitor/collector**: 采集库，负责采集各类监控数据
-- **@monitor/notifier**: 通知库，提供告警和通知功能
+- **@dmhsq_monitor/utils**: 工具库，提供基础工具函数
+- **@dmhsq_monitor/core**: 核心库，提供监控系统的基础功能
+- **@dmhsq_monitor/processor**: 加工库，处理和转换监控数据
+- **@dmhsq_monitor/collector**: 采集库，负责采集各类监控数据
+- **@dmhsq_monitor/notifier**: 通知库，提供告警和通知功能
 
 ## 开发
 
@@ -30,7 +30,7 @@ pnpm install
 pnpm dev
 
 # 特定包
-pnpm --filter @monitor/utils dev
+pnpm --filter @dmhsq_monitor/utils dev
 ```
 
 ### 构建
@@ -40,14 +40,14 @@ pnpm --filter @monitor/utils dev
 pnpm build
 
 # 特定包
-pnpm --filter @monitor/core build
+pnpm --filter @dmhsq_monitor/core build
 ```
 
 ## 使用示例
 
 ```js
-import { createMonitor } from '@monitor/core';
-import { initErrorCollector } from '@monitor/collector';
+import { createMonitor } from '@dmhsq_monitor/core';
+import { initErrorCollector } from '@dmhsq_monitor/collector';
 
 // 创建监控实例
 const monitor = createMonitor();
@@ -68,11 +68,11 @@ monitor.start();
 
 ## 包之间的依赖关系
 
-- **@monitor/utils**: 不依赖其他包
-- **@monitor/core**: 依赖 @monitor/utils
-- **@monitor/processor**: 依赖 @monitor/utils, @monitor/core
-- **@monitor/collector**: 依赖 @monitor/utils, @monitor/core
-- **@monitor/notifier**: 依赖 @monitor/utils, @monitor/core
+- **@dmhsq_monitor/utils**: 不依赖其他包
+- **@dmhsq_monitor/core**: 依赖 @dmhsq_monitor/utils
+- **@dmhsq_monitor/processor**: 依赖 @dmhsq_monitor/utils, @dmhsq_monitor/core
+- **@dmhsq_monitor/collector**: 依赖 @dmhsq_monitor/utils, @dmhsq_monitor/core
+- **@dmhsq_monitor/notifier**: 依赖 @dmhsq_monitor/utils, @dmhsq_monitor/core
 
 ## 许可证
 

@@ -10,7 +10,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "lib": ["ES2018", "DOM"]
+    "lib": ["ES2018", "DOM"],
+    "paths": {
+      "@dmhsq_monitor/utils": ["./packages/utils/src"],
+      "@dmhsq_monitor/core": ["./packages/core/src"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 } 

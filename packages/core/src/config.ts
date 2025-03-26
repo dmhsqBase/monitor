@@ -1,6 +1,6 @@
 import { MonitorConfig } from './types';
 import { DEFAULT_CONFIG } from './constants';
-import { isEmpty, omitEmpty } from '@monitor/utils';
+import { isEmpty, omitEmpty } from '@dmhsq_monitor/utils';
 
 /**
  * 配置管理类

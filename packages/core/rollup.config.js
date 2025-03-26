@@ -15,7 +15,7 @@ const config = {
       return {
         ...output,
         globals: {
-          '@monitor/utils': 'monitorUtils'
+          '@dmhsq_monitor/utils': 'dmhsqMonitorUtils'
         }
       };
     }

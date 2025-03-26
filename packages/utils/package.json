@@ -1,5 +1,5 @@
 {
-  "name": "@monitor/utils",
+  "name": "@dmhsq_monitor/utils",
   "version": "1.0.0",
   "description": "Utility library for monitor system",
   "type": "module",
