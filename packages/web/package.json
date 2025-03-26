@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/web",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Web monitoring package for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -41,12 +41,16 @@
     "access": "public"
   },
   "dependencies": {
-    "@dmhsq_monitor/core": "^1.0.0",
-    "@dmhsq_monitor/processor": "^1.0.0",
-    "@dmhsq_monitor/utils": "^1.0.0"
+    "@dmhsq_monitor/core": "^1.0.1",
+    "@dmhsq_monitor/processor": "^1.0.1",
+    "@dmhsq_monitor/utils": "^1.0.1"
   },
   "devDependencies": {},
   "changelog": {
+    "1.0.4": [
+      "更新依赖包版本",
+      "提高系统整体稳定性"
+    ],
     "1.0.3": [
       "修复了enablePerformance配置项无效的问题",
       "改进了配置处理逻辑，确保设置正确生效",

@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core library for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -38,7 +38,19 @@
     "access": "public"
   },
   "dependencies": {
-    "@dmhsq_monitor/utils": "^1.0.0"
+    "@dmhsq_monitor/utils": "^1.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "changelog": {
+    "1.0.1": [
+      "优化核心功能",
+      "提高事件处理的稳定性",
+      "更新依赖包版本"
+    ],
+    "1.0.0": [
+      "初始版本发布",
+      "提供基础监控功能",
+      "支持事件上报和存储"
+    ]
+  }
 } 

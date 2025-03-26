@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utility library for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -38,5 +38,15 @@
     "access": "public"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "changelog": {
+    "1.0.1": [
+      "优化工具函数",
+      "提高兼容性和稳定性"
+    ],
+    "1.0.0": [
+      "初始版本发布",
+      "提供常用工具函数"
+    ]
+  }
 } 

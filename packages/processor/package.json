@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/processor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Data processor package for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -40,8 +40,21 @@
     "access": "public"
   },
   "dependencies": {
-    "@dmhsq_monitor/core": "^1.0.0",
-    "@dmhsq_monitor/utils": "^1.0.0"
+    "@dmhsq_monitor/core": "^1.0.1",
+    "@dmhsq_monitor/utils": "^1.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "changelog": {
+    "1.0.1": [
+      "优化数据处理逻辑",
+      "提高IP收集准确性",
+      "增强错误聚合算法",
+      "更新依赖包版本"
+    ],
+    "1.0.0": [
+      "初始版本发布",
+      "提供数据去重和聚合功能",
+      "支持IP和地理位置信息收集"
+    ]
+  }
 } 
