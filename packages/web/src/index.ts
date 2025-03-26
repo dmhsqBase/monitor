@@ -1,4 +1,5 @@
 import { Monitor, IMonitor } from '@dmhsq_monitor/core';
+import { Processor } from '@dmhsq_monitor/processor';
 import { WebMonitorConfig } from './types';
 import { DEFAULT_CONFIG } from './constants';
 import { ErrorMonitor, PerformanceMonitor } from './monitors';
@@ -8,6 +9,7 @@ import { ErrorMonitor, PerformanceMonitor } from './monitors';
  */
 export class WebMonitor {
   private monitor: IMonitor;
+  private processor: Processor;
   private config: WebMonitorConfig;
   private errorMonitor: ErrorMonitor | null = null;
   private performanceMonitor: PerformanceMonitor | null = null;
@@ -20,6 +22,7 @@ export class WebMonitor {
   constructor(config: WebMonitorConfig) {
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.monitor = new Monitor();
+    this.processor = new Processor();
   }
 
   /**
@@ -30,6 +33,29 @@ export class WebMonitor {
 
     // 初始化核心监控
     this.monitor.init(this.config);
+    
+    // 初始化处理器
+    this.processor.init({
+      enableDeduplicate: this.config.enableDeduplicate !== false,
+      collectUserIp: this.config.collectUserIp !== false,
+      collectGeoInfo: !!this.config.collectGeoInfo,
+      mergeSimilarErrors: this.config.mergeSimilarErrors !== false
+    });
+
+    // 注册事件处理钩子
+    const originalOnReport = this.config.onReport;
+    this.config.onReport = async (events, context) => {
+      // 使用处理器处理事件
+      const processedEvents = await this.processor.batchProcess(events, context);
+      
+      // 如果有自定义上报回调，则调用
+      if (typeof originalOnReport === 'function') {
+        return originalOnReport(processedEvents, context);
+      }
+      
+      return processedEvents;
+    };
+
     this.monitor.start();
 
     // 初始化错误监控
@@ -83,6 +109,13 @@ export class WebMonitor {
    */
   public getMonitor(): IMonitor {
     return this.monitor;
+  }
+  
+  /**
+   * 获取处理器实例
+   */
+  public getProcessor(): Processor {
+    return this.processor;
   }
 }
 

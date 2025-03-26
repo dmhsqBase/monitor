@@ -3,13 +3,24 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@dmhsq_monitor/core": ["../core/src"],
+      "@dmhsq_monitor/utils": ["../utils/src"],
+      "@dmhsq_monitor/processor": ["../processor/src"]
+    }
   },
   "include": [
     "src/**/*"
   ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ],
   "references": [
     { "path": "../core" },
-    { "path": "../utils" }
+    { "path": "../utils" },
+    { "path": "../processor" }
   ]
 } 

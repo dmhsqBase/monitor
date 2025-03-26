@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/web",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Web monitoring package for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -42,10 +42,16 @@
   },
   "dependencies": {
     "@dmhsq_monitor/core": "^1.0.0",
+    "@dmhsq_monitor/processor": "^1.0.0",
     "@dmhsq_monitor/utils": "^1.0.0"
   },
   "devDependencies": {},
   "changelog": {
+    "1.0.2": [
+      "添加数据处理功能，集成processor包",
+      "支持数据去重和聚合",
+      "增加IP和地理位置信息收集功能"
+    ],
     "1.0.1": [
       "完善性能监控模块",
       "改进错误监控采样率控制",

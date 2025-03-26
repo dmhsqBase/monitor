@@ -32,6 +32,26 @@ export interface WebMonitorConfig extends MonitorConfig {
    * 启用错误监控
    */
   enableError?: boolean;
+  /** 
+   * 启用数据去重
+   */
+  enableDeduplicate?: boolean;
+  /**
+   * 收集用户IP
+   */
+  collectUserIp?: boolean;
+  /**
+   * 收集地理位置信息
+   */
+  collectGeoInfo?: boolean;
+  /**
+   * 合并相似错误
+   */
+  mergeSimilarErrors?: boolean;
+  /**
+   * 上报前处理函数
+   */
+  onReport?: (events: any[], context: any) => any[] | Promise<any[]>;
 }
 
 /**

@@ -1,27 +1,65 @@
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
+import { babel } from '@rollup/plugin-babel';
 import { readFileSync } from 'fs';
-import baseConfig from '../../rollup.config.base.js';
 
 const packageJson = JSON.parse(
   readFileSync(new URL('./package.json', import.meta.url), 'utf8')
 );
 
-// 复用基础配置
-const config = {
-  ...baseConfig,
-  input: 'src/index.ts',
-  // 设置全局变量名映射（用于 UMD 格式）
-  output: baseConfig.output.map(output => {
-    if (output.format === 'umd') {
-      return {
-        ...output,
-        globals: {
-          '@dmhsq_monitor/core': 'dmhsqMonitorCore',
-          '@dmhsq_monitor/utils': 'dmhsqMonitorUtils'
-        }
-      };
-    }
-    return output;
-  })
-};
+const { name, dependencies = {}, peerDependencies = {} } = packageJson;
 
-export default config; 
+// 提取包名称为UMD格式的全局变量名
+const umdName = 'DMHSQMonitorWeb';
+
+// 获取需要排除的依赖
+const externalDeps = [...Object.keys(dependencies), ...Object.keys(peerDependencies)];
+
+export default {
+  input: 'src/index.ts',
+  external: id => externalDeps.some(dep => id === dep || id.startsWith(`${dep}/`)),
+  plugins: [
+    resolve(),
+    commonjs(),
+    typescript({
+      tsconfig: './tsconfig.json',
+      sourceMap: true,
+      declaration: true,
+      declarationDir: 'dist',
+    }),
+    babel({
+      babelHelpers: 'bundled',
+      exclude: 'node_modules/**',
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    }),
+  ],
+  output: [
+    // CommonJS
+    {
+      file: packageJson.main,
+      format: 'cjs',
+      sourcemap: true,
+    },
+    // ESModule
+    {
+      file: packageJson.module,
+      format: 'esm',
+      sourcemap: true,
+    },
+    // UMD
+    {
+      file: packageJson.unpkg,
+      format: 'umd',
+      name: umdName,
+      sourcemap: true,
+      plugins: [terser()],
+      globals: {
+        '@dmhsq_monitor/core': 'DMHSQMonitorCore',
+        '@dmhsq_monitor/utils': 'DMHSQMonitorUtils',
+        '@dmhsq_monitor/processor': 'DMHSQMonitorProcessor'
+      },
+    },
+  ],
+}; 
