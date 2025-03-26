@@ -21,15 +21,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       
+      - name: Install rollup 
+        run: npm install rollup
+      
       - name: Install root dependencies
         run: npm install
         
-      - name: Install packages dependencies
-        run: |
-          cd packages/utils && npm install
-          cd ../core && npm install
-          cd ../processor && npm install
-          cd ../web && npm install
       
       - name: Run linting
         run: npm run lint

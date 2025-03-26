@@ -26,7 +26,7 @@ export const EVENT_TYPES = {
 /**
  * Web监控版本
  */
-export const WEB_MONITOR_VERSION = '1.0.8';
+export const WEB_MONITOR_VERSION = '1.0.9';
 
 /**
  * 默认配置
