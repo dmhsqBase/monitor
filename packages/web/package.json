@@ -1,0 +1,61 @@
+{
+  "name": "@dmhsq_monitor/web",
+  "version": "1.0.1",
+  "description": "Web monitoring package for monitor system",
+  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmhsqBase/monitor.git",
+    "directory": "packages/web"
+  },
+  "keywords": [
+    "monitor",
+    "web",
+    "browser",
+    "performance",
+    "error",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmhsqBase/monitor/issues"
+  },
+  "homepage": "https://github.com/dmhsqBase/monitor/tree/main/packages/web#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@dmhsq_monitor/core": "^1.0.0",
+    "@dmhsq_monitor/utils": "^1.0.0"
+  },
+  "devDependencies": {},
+  "changelog": {
+    "1.0.1": [
+      "完善性能监控模块",
+      "改进错误监控采样率控制",
+      "修复错误处理异常问题",
+      "优化性能和内存占用"
+    ],
+    "1.0.0": [
+      "初始版本发布",
+      "实现基础监控功能",
+      "支持错误和性能监控"
+    ]
+  }
+} 
