@@ -1,0 +1,47 @@
+{
+  "name": "@dmhsq_monitor/processor",
+  "version": "1.0.0",
+  "description": "Data processor package for monitor system",
+  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmhsqBase/monitor.git",
+    "directory": "packages/processor"
+  },
+  "keywords": [
+    "monitor",
+    "processor",
+    "data",
+    "aggregation",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmhsqBase/monitor/issues"
+  },
+  "homepage": "https://github.com/dmhsqBase/monitor/tree/main/packages/processor#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@dmhsq_monitor/core": "^1.0.0",
+    "@dmhsq_monitor/utils": "^1.0.0"
+  },
+  "devDependencies": {}
+} 

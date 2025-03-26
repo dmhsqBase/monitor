@@ -1,0 +1,15 @@
+src/
+node_modules/
+tests/
+coverage/
+.DS_Store
+*.log
+tsconfig.json
+rollup.config.js
+.eslintrc
+.prettierrc
+.git
+.github
+jest.config.js
+babel.config.js
+*.tsbuildinfo 
