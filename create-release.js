@@ -2,11 +2,13 @@
 
 /**
  * 创建版本标签并推送到 GitHub 的脚本
+ * 只创建并推送标签，不执行构建，构建和发布由GitHub Actions自动完成
  */
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import readline from 'readline';
 
 // 获取当前文件的目录
 const __filename = fileURLToPath(import.meta.url);
@@ -44,30 +46,40 @@ function getMainVersion() {
   return packageJson.version;
 }
 
+// 创建命令行交互
+function createPrompt() {
+  return readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+}
+
 // 主函数
-function main() {
+async function main() {
   try {
     // 检查是否有未提交的更改
+    let hasUncommittedChanges = false;
     try {
       execSync('git diff --quiet && git diff --staged --quiet');
     } catch (error) {
+      hasUncommittedChanges = true;
+    }
+
+    if (hasUncommittedChanges) {
       log('\n警告：有未提交的变更。请先提交或取消所有更改。', colors.bright + colors.yellow);
-      const response = require('readline').createInterface({
-        input: process.stdin,
-        output: process.stdout
-      });
+      const rl = createPrompt();
       
-      response.question('是否继续？(y/N) ', answer => {
+      rl.question('是否继续？(y/N) ', answer => {
+        rl.close();
         if (answer.toLowerCase() !== 'y') {
           log('操作已取消', colors.red);
           process.exit(1);
         }
-        response.close();
         continueRelease();
       });
+    } else {
+      continueRelease();
     }
-    
-    continueRelease();
     
   } catch (error) {
     log(`\n错误：${error.message}`, colors.red);
@@ -97,14 +109,12 @@ function continueRelease() {
         packageJson.changelog[packageVersion].forEach(note => {
           releaseNotes += `- ${note}\n`;
         });
+      } else {
+        releaseNotes += `- 无更新说明\n`;
       }
       
       releaseNotes += '\n';
     }
-    
-    // 将更新日志写入临时文件
-    const tempNotesPath = path.join(__dirname, 'RELEASE_NOTES.md');
-    fs.writeFileSync(tempNotesPath, releaseNotes, 'utf8');
     
     log(`\n版本更新内容:\n${releaseNotes}`, colors.reset);
     
@@ -124,13 +134,11 @@ function continueRelease() {
       execSync(`git push origin ${tagName}`);
       log(`\n标签 ${tagName} 推送成功`, colors.green);
       log(`\nGitHub Actions 将自动构建和发布包`, colors.cyan);
+      log(`\n您可以在GitHub上查看进度: https://github.com/dmhsqBase/monitor/actions`, colors.cyan);
     } catch (error) {
       log(`\n标签推送失败: ${error.message}`, colors.red);
       log(`\n您可以稍后手动推送: git push origin ${tagName}`, colors.yellow);
     }
-    
-    // 删除临时文件
-    fs.unlinkSync(tempNotesPath);
     
   } catch (error) {
     log(`\n错误：${error.message}`, colors.red);

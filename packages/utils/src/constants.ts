@@ -1,7 +1,7 @@
 /**
  * 工具库版本
  */
-export const UTILS_VERSION = '1.0.4';
+export const UTILS_VERSION = '1.0.5';
 
 /**
  * 常用正则表达式

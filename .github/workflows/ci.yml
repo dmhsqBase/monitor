@@ -20,26 +20,28 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
       
-      - name: Install dependencies
-        run: npm ci
+      - name: Install root dependencies
+        run: npm install
+        
+      - name: Install packages dependencies
+        run: |
+          cd packages/utils && npm install
+          cd ../core && npm install
+          cd ../processor && npm install
+          cd ../web && npm install
       
       - name: Run linting
-        run: npm run lint || echo "Linting failed but continuing..."
+        run: npm run lint
       
       - name: Type check
-        run: npm run type-check || echo "Type checking failed but continuing..."
+        run: npm run type-check
       
       - name: Build packages
-        run: |
-          cd packages/utils && npm run build
-          cd ../core && npm run build
-          cd ../processor && npm run build
-          cd ../web && npm run build
+        run: npm run build
       
       - name: Run tests
-        run: npm test || echo "Tests failed but continuing..."
+        run: npm run test
       
       - name: Cache build artifacts
         uses: actions/cache@v3
