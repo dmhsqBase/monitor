@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/web",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Web monitoring package for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -47,6 +47,11 @@
   },
   "devDependencies": {},
   "changelog": {
+    "1.0.3": [
+      "修复了enablePerformance配置项无效的问题",
+      "改进了配置处理逻辑，确保设置正确生效",
+      "增强了功能开关的一致性"
+    ],
     "1.0.2": [
       "添加数据处理功能，集成processor包",
       "支持数据去重和聚合",

@@ -24,6 +24,11 @@ export class PerformanceMonitor {
    */
   public install(): void {
     if (this.isInstalled) return;
+    
+    // 检查是否启用了性能监控
+    if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
+      return;
+    }
 
     // 注册页面加载性能收集
     this.setupLoadPerformanceMonitor();
@@ -53,6 +58,11 @@ export class PerformanceMonitor {
    * 设置页面加载性能监控
    */
   private setupLoadPerformanceMonitor(): void {
+    // 再次检查性能监控是否启用
+    if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
+      return;
+    }
+    
     // 如果页面已加载，则立即收集
     if (document.readyState === 'complete') {
       this.collectPageLoadPerformance();
@@ -69,6 +79,11 @@ export class PerformanceMonitor {
    * 收集页面加载性能数据
    */
   private collectPageLoadPerformance(): void {
+    // 再次检查性能监控是否启用
+    if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
+      return;
+    }
+    
     // 采样控制
     const samplingRate = this.config.errorSamplingRate || 1.0;
     if (!shouldSample(samplingRate)) return;
@@ -126,7 +141,17 @@ export class PerformanceMonitor {
    * 设置页面可见性变化监控
    */
   private setupVisibilityChangeMonitor(): void {
+    // 再次检查性能监控是否启用
+    if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
+      return;
+    }
+    
     this.visibilityChangeHandler = () => {
+      // 再次检查性能监控是否启用
+      if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
+        return;
+      }
+      
       // 采样控制
       const samplingRate = this.config.errorSamplingRate || 1.0;
       if (!shouldSample(samplingRate)) return;

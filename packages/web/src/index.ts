@@ -20,7 +20,21 @@ export class WebMonitor {
    * @param config 配置
    */
   constructor(config: WebMonitorConfig) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    // 处理显式禁用功能的情况
+    const processedConfig = { ...DEFAULT_CONFIG, ...config };
+    
+    // 确保配置的一致性
+    if (config.enablePerformance === false) {
+      processedConfig.enablePerformance = false;
+      processedConfig.enablePerformanceMonitoring = false;
+    }
+    
+    if (config.enableError === false) {
+      processedConfig.enableError = false;
+      processedConfig.enableAutoErrorCapture = false;
+    }
+    
+    this.config = processedConfig;
     this.monitor = new Monitor();
     this.processor = new Processor();
   }
@@ -59,13 +73,13 @@ export class WebMonitor {
     this.monitor.start();
 
     // 初始化错误监控
-    if (this.config.enableError || this.config.enableAutoErrorCapture) {
+    if (this.config.enableError !== false && this.config.enableAutoErrorCapture !== false) {
       this.errorMonitor = new ErrorMonitor(this.monitor, this.config);
       this.errorMonitor.install();
     }
 
     // 初始化性能监控
-    if (this.config.enablePerformance || this.config.enablePerformanceMonitoring) {
+    if (this.config.enablePerformance !== false && this.config.enablePerformanceMonitoring !== false) {
       this.performanceMonitor = new PerformanceMonitor(this.monitor, this.config);
       this.performanceMonitor.install();
     }
