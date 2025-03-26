@@ -68,8 +68,8 @@ importers:
 
   packages/core:
     dependencies:
-      '@monitor/utils':
-        specifier: workspace:*
+      '@dmhsq_monitor/utils':
+        specifier: ^1.0.0
         version: link:../utils
 
   packages/utils: {}

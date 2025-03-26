@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/monitor.git",
+    "url": "git+https://github.com/dmhsqBase/monitor.git",
     "directory": "packages/utils"
   },
   "keywords": [
@@ -31,9 +31,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yourusername/monitor/issues"
+    "url": "https://github.com/dmhsqBase/monitor/issues"
   },
-  "homepage": "https://github.com/yourusername/monitor/tree/main/packages/utils#readme",
+  "homepage": "https://github.com/dmhsqBase/monitor/tree/main/packages/utils#readme",
   "publishConfig": {
     "access": "public"
   },

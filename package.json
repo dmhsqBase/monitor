@@ -10,11 +10,11 @@
     "clean": "pnpm -r clean",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "publish-packages": "pnpm run build && pnpm publish -r --access public"
+    "publish-packages": "pnpm run build && pnpm publish -r --access public --no-git-checks --no-workspace-root"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/monitor.git"
+    "url": "git+https://github.com/dmhsqBase/monitor.git"
   },
   "keywords": [
     "monitor",
@@ -25,9 +25,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yourusername/monitor/issues"
+    "url": "https://github.com/dmhsqBase/monitor/issues"
   },
-  "homepage": "https://github.com/yourusername/monitor#readme",
+  "homepage": "https://github.com/dmhsqBase/monitor#readme",
   "engines": {
     "node": ">=14",
     "pnpm": ">=7"
