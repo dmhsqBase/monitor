@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/utils",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Utility library for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -40,6 +40,11 @@
   "dependencies": {},
   "devDependencies": {},
   "changelog": {
+    "1.0.2": [
+      "添加常用正则表达式",
+      "优化IP地址处理功能",
+      "改进兼容性处理"
+    ],
     "1.0.1": [
       "优化工具函数",
       "提高兼容性和稳定性"
@@ -47,6 +52,11 @@
     "1.0.0": [
       "初始版本发布",
       "提供常用工具函数"
+    ],
+    "1.0.3": [
+      "优化工具函数",
+      "提高兼容性和稳定性",
+      "改进正则表达式模式"
     ]
   }
-} 
+}

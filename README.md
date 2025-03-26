@@ -1,79 +1,60 @@
-# Monitor
+# 监控系统包更新工具
 
-一个模块化的监控系统，由多个包组成，支持 TypeScript 和多种模块格式 (ESM, CJS, UMD)。
+这个工具用于自动更新、构建和发布监控系统的各个包。
 
-## 项目结构
+## 功能
 
-- **@dmhsq_monitor/utils**: 工具库，提供基础工具函数
-- **@dmhsq_monitor/core**: 核心库，提供监控系统的基础功能
-- **@dmhsq_monitor/processor**: 加工库，处理和转换监控数据
-- **@dmhsq_monitor/collector**: 采集库，负责采集各类监控数据
-- **@dmhsq_monitor/notifier**: 通知库，提供告警和通知功能
+- 自动更新所有包的版本号
+- 更新各个包中`constants.ts`文件中的版本常量
+- 更新包之间的依赖关系
+- 构建所有包
+- 发布更新后的包到npm
 
-## 开发
+## 使用方法
 
-### 环境要求
-
-- Node.js >= 14
-- pnpm >= 7
-
-### 安装依赖
+### 完整更新流程（更新 + 构建 + 发布）
 
 ```bash
-pnpm install
+# 执行默认版本更新 (patch, 如 1.0.1 -> 1.0.2)
+./update-and-publish.js
+
+# 指定版本更新类型
+./update-and-publish.js patch  # 补丁版本 (x.y.z -> x.y.z+1)
+./update-and-publish.js minor  # 次要版本 (x.y.z -> x.y+1.0)
+./update-and-publish.js major  # 主要版本 (x.y.z -> x+1.0.0)
 ```
 
-### 开发模式
+### 仅更新版本（不构建和发布）
+
+如果只需要更新版本号和依赖关系，但不需要构建和发布，可以使用：
 
 ```bash
-# 所有包
-pnpm dev
+# 执行默认版本更新 (patch)
+./update-versions.js
 
-# 特定包
-pnpm --filter @dmhsq_monitor/utils dev
+# 指定版本更新类型
+./update-versions.js patch
+./update-versions.js minor
+./update-versions.js major
 ```
 
-### 构建
+## 包更新顺序
 
-```bash
-# 所有包
-pnpm build
+脚本会按照依赖关系顺序更新各个包：
 
-# 特定包
-pnpm --filter @dmhsq_monitor/core build
-```
+1. `@dmhsq_monitor/utils` - 工具库，不依赖其他包
+2. `@dmhsq_monitor/core` - 核心库，依赖 utils
+3. `@dmhsq_monitor/processor` - 处理器库，依赖 core 和 utils
+4. `@dmhsq_monitor/web` - Web监控库，依赖所有其他包
 
-## 使用示例
+## 技术说明
 
-```js
-import { createMonitor } from '@dmhsq_monitor/core';
-import { initErrorCollector } from '@dmhsq_monitor/collector';
+- 脚本使用 ES 模块语法编写
+- 脚本会自动处理版本号递增、changelog更新和常量修改
+- 需要 Node.js 14.0.0 或更高版本
 
-// 创建监控实例
-const monitor = createMonitor();
+## 注意事项
 
-// 初始化监控
-monitor.init({
-  appId: 'your-app-id',
-  serverUrl: 'https://api.example.com/monitor',
-  debug: true
-});
-
-// 初始化错误采集
-initErrorCollector(monitor);
-
-// 启动监控
-monitor.start();
-```
-
-## 包之间的依赖关系
-
-- **@dmhsq_monitor/utils**: 不依赖其他包
-- **@dmhsq_monitor/core**: 依赖 @dmhsq_monitor/utils
-- **@dmhsq_monitor/processor**: 依赖 @dmhsq_monitor/utils, @dmhsq_monitor/core
-- **@dmhsq_monitor/collector**: 依赖 @dmhsq_monitor/utils, @dmhsq_monitor/core
-- **@dmhsq_monitor/notifier**: 依赖 @dmhsq_monitor/utils, @dmhsq_monitor/core
-
-## 许可证
-
-ISC 
+- 确保已登录npm账号 (`npm login`)
+- 确保有网络连接
+- 确保所有包的代码都已经提交到版本控制系统 

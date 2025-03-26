@@ -36,7 +36,21 @@ export class WebMonitor {
     
     this.config = processedConfig;
     this.monitor = new Monitor();
+    
+    // 立即初始化处理器，确保在其他操作前配置好
     this.processor = new Processor();
+    this.processor.init({
+      enableDeduplicate: this.config.enableDeduplicate !== false,
+      // 使用更短的去重时间窗口 - 5分钟，可根据需要调整
+      deduplicateWindow: 5 * 60 * 1000,
+      collectUserIp: this.config.collectUserIp !== false,
+      collectGeoInfo: !!this.config.collectGeoInfo,
+      mergeSimilarErrors: this.config.mergeSimilarErrors !== false
+    });
+    
+    if (processedConfig.debug) {
+      console.log('[WebMonitor] Processor initialized with config:', this.processor.getConfig());
+    }
   }
 
   /**
@@ -48,26 +62,24 @@ export class WebMonitor {
     // 初始化核心监控
     this.monitor.init(this.config);
     
-    // 初始化处理器
-    this.processor.init({
-      enableDeduplicate: this.config.enableDeduplicate !== false,
-      collectUserIp: this.config.collectUserIp !== false,
-      collectGeoInfo: !!this.config.collectGeoInfo,
-      mergeSimilarErrors: this.config.mergeSimilarErrors !== false
-    });
-
-    // 注册事件处理钩子
+    // 注册事件处理钩子 - 确保在上报前进行数据处理
     const originalOnReport = this.config.onReport;
     this.config.onReport = async (events, context) => {
-      // 使用处理器处理事件
-      const processedEvents = await this.processor.batchProcess(events, context);
-      
-      // 如果有自定义上报回调，则调用
-      if (typeof originalOnReport === 'function') {
-        return originalOnReport(processedEvents, context);
+      try {
+        // 使用处理器处理事件
+        const processedEvents = await this.processor.batchProcess(events, context);
+        
+        // 如果有自定义上报回调，则调用
+        if (typeof originalOnReport === 'function') {
+          return originalOnReport(processedEvents, context);
+        }
+        
+        return processedEvents;
+      } catch (error) {
+        console.error('[WebMonitor] Error processing events:', error);
+        // 出错时仍然返回原始事件，确保数据不丢失
+        return typeof originalOnReport === 'function' ? originalOnReport(events, context) : events;
       }
-      
-      return processedEvents;
     };
 
     this.monitor.start();
@@ -78,8 +90,8 @@ export class WebMonitor {
       this.errorMonitor.install();
     }
 
-    // 初始化性能监控
-    if (this.config.enablePerformance !== false && this.config.enablePerformanceMonitoring !== false) {
+    // 初始化性能监控，只有当明确启用时才初始化
+    if (this.config.enablePerformance === true && this.config.enablePerformanceMonitoring !== false) {
       this.performanceMonitor = new PerformanceMonitor(this.monitor, this.config);
       this.performanceMonitor.install();
     }
@@ -130,6 +142,17 @@ export class WebMonitor {
    */
   public getProcessor(): Processor {
     return this.processor;
+  }
+  
+  /**
+   * 手动清理处理器的重复事件缓存
+   */
+  public clearDeduplicationCache(): void {
+    // 通过公开的API调用处理器的清理方法
+    const cleanupFn = (this.processor as any)._cleanupEventHashes;
+    if (typeof cleanupFn === 'function') {
+      cleanupFn();
+    }
   }
 }
 

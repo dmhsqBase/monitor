@@ -13,6 +13,7 @@ import {
   PROCESSOR_VERSION,
   ProcessStatus
 } from './constants';
+import { initDeduplication } from './utils/deduplication';
 
 /**
  * 数据处理器核心类
@@ -22,6 +23,9 @@ export class Processor implements IProcessor {
   
   constructor() {
     this.configManager = new ConfigManager();
+    
+    // 初始化重复检测功能
+    initDeduplication();
     
     // 定期清理过期的去重哈希记录
     setInterval(() => {
@@ -46,37 +50,35 @@ export class Processor implements IProcessor {
    * @returns 处理后的事件或null（如果被过滤）
    */
   public async process(event: MonitorEvent, context: any): Promise<MonitorEvent | null> {
-    try {
-      // 1. 检查是否重复事件
-      if (this.configManager.isDeduplicateEnabled() && isDuplicateEvent(event, this.configManager.getDeduplicateWindow())) {
-        console.log(`[${PROCESSOR_NAME}] 丢弃重复事件: ${event.id}`);
+    // 检查是否为重复事件
+    if (this.configManager.isDeduplicateEnabled()) {
+      if (isDuplicateEvent(event, this.configManager.getDeduplicateWindow())) {
+        console.log(`[${PROCESSOR_NAME}] 检测到重复事件，已过滤: ${event.type} - ${event.name}`);
         return null;
       }
-      
-      // 2. 扩充事件信息
-      const enrichedEvent = await this.enrichEvent(event, context);
-      
-      // 3. 应用自定义处理器
-      let processedEvent = enrichedEvent;
-      for (const processor of this.configManager.getCustomProcessors()) {
-        try {
-          const result = processor(processedEvent, context);
-          if (result) {
-            processedEvent = result;
-          } else {
-            // 如果自定义处理器返回null/undefined，表示事件应该被过滤
-            return null;
-          }
-        } catch (error) {
-          console.error(`[${PROCESSOR_NAME}] 自定义处理器执行失败:`, error);
-        }
-      }
-      
-      return processedEvent;
-    } catch (error) {
-      console.error(`[${PROCESSOR_NAME}] 处理事件失败:`, error);
-      return event; // 发生错误时返回原始事件
     }
+    
+    // 应用自定义处理器
+    const customProcessors = this.configManager.getCustomProcessors();
+    let processedEvent = { ...event };
+    
+    for (const processor of customProcessors) {
+      try {
+        const result = processor(processedEvent, context);
+        if (!result) {
+          console.log(`[${PROCESSOR_NAME}] 事件被自定义处理器过滤: ${processedEvent.type} - ${processedEvent.name}`);
+          return null;
+        }
+        processedEvent = result;
+      } catch (error) {
+        console.error(`[${PROCESSOR_NAME}] 自定义处理器执行失败:`, error);
+      }
+    }
+    
+    // 扩充事件信息
+    processedEvent = await this.enrichEvent(processedEvent, context);
+    
+    return processedEvent;
   }
   
   /**
@@ -129,6 +131,20 @@ export class Processor implements IProcessor {
   public updateConfig(config: Partial<ProcessorConfig>): void {
     this.configManager.updateConfig(config);
   }
+  
+  /**
+   * 清理重复事件缓存
+   * 公开方法，用于手动清理缓存
+   */
+  public cleanupCache(maxAge?: number): void {
+    cleanupEventHashes(maxAge);
+  }
+  
+  /**
+   * 使内部方法在调试时可访问
+   * 注意：这些方法不应用于生产环境
+   */
+  _cleanupEventHashes = cleanupEventHashes;
   
   /**
    * 扩充事件信息
