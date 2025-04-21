@@ -207,6 +207,8 @@ export class Monitor implements IMonitor {
         'X-App-Id': this.configManager.getConfig().appId,
         'X-App-Token': this.configManager.getConfig().appToken
       },
+      mode: 'cors',
+      credentials: 'include',
       body: JSON.stringify({
         events,
         context,
