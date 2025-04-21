@@ -123,15 +123,28 @@ export class Monitor implements IMonitor {
    * @param event 事件对象
    */
   private addEvent(event: MonitorEvent): void {
-    this.eventQueue.push(event);
-    
-    // 如果超过最大缓存数，移除最早的事件
-    if (this.eventQueue.length > this.configManager.getMaxCache()) {
-      this.eventQueue.shift();
+    // 检查是否已存在相同的事件
+    const isDuplicate = this.eventQueue.some(existingEvent => {
+      if (event.type === 'error') {
+        // 对于错误事件，使用消息和堆栈来比较
+        return existingEvent.type === 'error' && 
+               existingEvent.data.message === event.data.message &&
+               existingEvent.data.stack === event.data.stack;
+      }
+      return false;
+    });
+
+    if (!isDuplicate) {
+      this.eventQueue.push(event);
+      
+      // 如果超过最大缓存数，移除最早的事件
+      if (this.eventQueue.length > this.configManager.getMaxCache()) {
+        this.eventQueue.shift();
+      }
+      
+      // 保存到本地
+      this.saveEventsToStorage();
     }
-    
-    // 保存到本地
-    this.saveEventsToStorage();
   }
   
   /**
@@ -196,6 +209,7 @@ export class Monitor implements IMonitor {
       return;
     }
     
+    // 创建要发送的事件副本
     const events = [...this.eventQueue];
     const context = this.getContext();
     
@@ -217,8 +231,10 @@ export class Monitor implements IMonitor {
     })
     .then(response => {
       if (response.ok) {
-        // 清空已发送的事件
-        this.eventQueue = [];
+        // 只移除已成功发送的事件
+        this.eventQueue = this.eventQueue.filter(event => 
+          !events.some(sentEvent => sentEvent.id === event.id)
+        );
         this.saveEventsToStorage();
         
         if (this.configManager.isDebugMode()) {
