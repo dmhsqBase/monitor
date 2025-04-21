@@ -204,6 +204,8 @@ export class Monitor implements IMonitor {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-App-Id': this.configManager.getConfig().appId,
+        'X-App-Token': this.configManager.getConfig().appToken
       },
       body: JSON.stringify({
         events,
