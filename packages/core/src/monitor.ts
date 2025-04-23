@@ -370,14 +370,20 @@ export class Monitor implements IMonitor {
   }
 
   private setupVisibilityTracking(): void {
+    // 检查是否启用了页面可见性统计
+    if (!this.configManager.getConfig().enablePageVisibility) {
+      return;
+    }
+
     this.visibilityChangeHandler = () => {
       const visibilityState = document.visibilityState;
       this.report({
-        type: EventType.BEHAVIOR,
+        type: EventType.PERFORMANCE,
         name: 'page_visibility',
         data: {
           state: visibilityState,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          url: window.location.href
         }
       });
     };

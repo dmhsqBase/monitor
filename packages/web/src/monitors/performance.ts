@@ -93,17 +93,19 @@ export class PerformanceMonitor {
       return;
     }
 
-    const timing = window.performance.timing;
+    const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const performanceData: PerformanceData = {
-      loadTime: timing.loadEventEnd - timing.navigationStart,
-      domReadyTime: timing.domComplete - timing.domLoading,
+      loadTime: timing.loadEventEnd - timing.startTime,
+      domReadyTime: timing.domComplete - timing.domInteractive,
       redirectTime: timing.redirectEnd - timing.redirectStart,
       dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
       tcpTime: timing.connectEnd - timing.connectStart,
       ttfb: timing.responseStart - timing.requestStart,
       responseTime: timing.responseEnd - timing.responseStart,
-      domContentLoadedTime: timing.domContentLoadedEventEnd - timing.navigationStart,
-      url: window.location.href
+      domContentLoadedTime: timing.domContentLoadedEventEnd - timing.startTime,
+      url: window.location.href,
+      referrer: document.referrer || 'direct',
+      entryType: document.referrer ? 'navigation' : 'direct'
     };
 
     // 收集首次绘制和首次内容绘制时间 (如果可用)
@@ -141,21 +143,12 @@ export class PerformanceMonitor {
    * 设置页面可见性变化监控
    */
   private setupVisibilityChangeMonitor(): void {
-    // 再次检查性能监控是否启用
-    if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
+    // 检查是否启用了页面可见性统计
+    if (!this.config.enablePageVisibility) {
       return;
     }
-    
+
     this.visibilityChangeHandler = () => {
-      // 再次检查性能监控是否启用
-      if (this.config.enablePerformance === false && this.config.enablePerformanceMonitoring === false) {
-        return;
-      }
-      
-      // 采样控制
-      const samplingRate = this.config.errorSamplingRate || 1.0;
-      if (!shouldSample(samplingRate)) return;
-      
       const isVisible = document.visibilityState === 'visible';
       
       this.monitor.report({

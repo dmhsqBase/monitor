@@ -98,6 +98,14 @@ export interface PerformanceData {
    * 首次内容绘制时间 (First Contentful Paint)
    */
   firstContentfulPaint?: number;
+  /**
+   * 页面来源URL
+   */
+  referrer: string;
+  /**
+   * 页面进入方式
+   */
+  entryType: 'navigation' | 'direct';
 }
 
 /**
