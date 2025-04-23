@@ -221,18 +221,25 @@ export class Monitor implements IMonitor {
       return;
     }
     
-    // 创建要发送的事件副本
     const events = [...this.eventQueue];
     const context = this.getContext();
+    const config = this.configManager.getConfig();
+    
+    // 构建请求头
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-App-Id': config.appId
+    };
+    
+    // 只在 appToken 存在时添加该请求头
+    if (config.appToken) {
+      headers['X-App-Token'] = config.appToken;
+    }
     
     // 发送事件
     fetch(this.configManager.getServerUrl() + 'collect', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Id': this.configManager.getConfig().appId,
-        'X-App-Token': this.configManager.getConfig().appToken
-      },
+      headers,
       mode: 'cors',
       credentials: 'include',
       body: JSON.stringify({
@@ -281,24 +288,85 @@ export class Monitor implements IMonitor {
    * 获取上下文信息
    */
   private getContext(): Record<string, any> {
+    const userAgent = navigator.userAgent;
+    const browserInfo = this.getBrowserInfo(userAgent);
+    
     return {
       sdk: {
         name: SDK_NAME,
         version: SDK_VERSION,
       },
       app: {
-        id: this.configManager.getAppId(),
+        id: this.configManager.getConfig().appId,
       },
       session: {
         id: this.sessionId,
       },
       device: {
-        userAgent: navigator.userAgent,
+        userAgent,
         language: navigator.language,
         screenSize: `${window.screen.width}x${window.screen.height}`,
+        browser: browserInfo
       },
       ...this.configManager.getContext(),
     };
+  }
+
+  private getBrowserInfo(userAgent: string): Record<string, any> {
+    const browserInfo: Record<string, any> = {
+      name: 'Unknown',
+      version: 'Unknown',
+      platform: 'Unknown',
+      isMobile: false,
+      isTablet: false,
+      isDesktop: false
+    };
+
+    // 检测浏览器类型和版本
+    if (userAgent.includes('Chrome')) {
+      browserInfo.name = 'Chrome';
+      const match = userAgent.match(/Chrome\/(\d+)/);
+      if (match) browserInfo.version = match[1];
+    } else if (userAgent.includes('Firefox')) {
+      browserInfo.name = 'Firefox';
+      const match = userAgent.match(/Firefox\/(\d+)/);
+      if (match) browserInfo.version = match[1];
+    } else if (userAgent.includes('Safari')) {
+      browserInfo.name = 'Safari';
+      const match = userAgent.match(/Version\/(\d+)/);
+      if (match) browserInfo.version = match[1];
+    } else if (userAgent.includes('Edge')) {
+      browserInfo.name = 'Edge';
+      const match = userAgent.match(/Edge\/(\d+)/);
+      if (match) browserInfo.version = match[1];
+    } else if (userAgent.includes('MSIE') || userAgent.includes('Trident/')) {
+      browserInfo.name = 'Internet Explorer';
+      const match = userAgent.match(/(?:MSIE |rv:)(\d+)/);
+      if (match) browserInfo.version = match[1];
+    }
+
+    // 检测平台
+    if (userAgent.includes('Windows')) {
+      browserInfo.platform = 'Windows';
+    } else if (userAgent.includes('Mac')) {
+      browserInfo.platform = 'Mac';
+    } else if (userAgent.includes('Linux')) {
+      browserInfo.platform = 'Linux';
+    } else if (userAgent.includes('Android')) {
+      browserInfo.platform = 'Android';
+    } else if (userAgent.includes('iOS') || userAgent.includes('iPhone') || userAgent.includes('iPad')) {
+      browserInfo.platform = 'iOS';
+    }
+
+    // 检测设备类型
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    const isTablet = /iPad|Android(?!.*Mobile)/i.test(userAgent);
+    
+    browserInfo.isMobile = isMobile;
+    browserInfo.isTablet = isTablet;
+    browserInfo.isDesktop = !isMobile && !isTablet;
+
+    return browserInfo;
   }
 
   private setupVisibilityTracking(): void {

@@ -39,13 +39,11 @@ export class WebMonitor {
     
     // 立即初始化处理器，确保在其他操作前配置好
     this.processor = new Processor();
-    this.processor.init({
+    this.processor.updateConfig({
       enableDeduplicate: this.config.enableDeduplicate !== false,
-      // 使用更短的去重时间窗口 - 5分钟，可根据需要调整
-      deduplicateWindow: 5 * 60 * 1000,
-      collectUserIp: this.config.collectUserIp !== false,
-      collectGeoInfo: !!this.config.collectGeoInfo,
-      mergeSimilarErrors: this.config.mergeSimilarErrors !== false
+      collectGeoInfo: this.config.collectGeoInfo === true,
+      mergeSimilarErrors: this.config.mergeSimilarErrors !== false,
+      customProcessors: []
     });
     
     if (processedConfig.debug) {

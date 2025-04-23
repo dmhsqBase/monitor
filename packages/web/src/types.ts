@@ -37,10 +37,6 @@ export interface WebMonitorConfig extends MonitorConfig {
    */
   enableDeduplicate?: boolean;
   /**
-   * 收集用户IP
-   */
-  collectUserIp?: boolean;
-  /**
    * 收集地理位置信息
    */
   collectGeoInfo?: boolean;

@@ -5,7 +5,7 @@ export interface MonitorConfig {
   /** 应用ID */
   appId: string;
   /** 应用Token */
-  appToken: string;
+  appToken?: string;
   /** 服务端地址 */
   serverUrl: string;
   /** 是否启用调试模式 */

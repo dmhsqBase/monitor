@@ -10,7 +10,7 @@ export const DEFAULT_CONFIG = {
 /**
  * SDK 版本
  */
-export const SDK_VERSION = '1.0.12';
+export const SDK_VERSION = '1.0.15';
 
 /**
  * SDK 名称
