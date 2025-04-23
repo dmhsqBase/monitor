@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/utils",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Utility library for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -94,6 +94,11 @@
       "改进正则表达式模式"
     ],
     "1.0.11": [
+      "优化工具函数",
+      "提高兼容性和稳定性",
+      "改进正则表达式模式"
+    ],
+    "1.0.12": [
       "优化工具函数",
       "提高兼容性和稳定性",
       "改进正则表达式模式"

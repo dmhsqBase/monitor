@@ -22,6 +22,7 @@ export class Monitor implements IMonitor {
   private eventQueue: MonitorEvent[] = [];
   private reportTimer: NodeJS.Timeout | null = null;
   private sessionId: string;
+  private visibilityChangeHandler: (() => void) | null = null;
   
   constructor() {
     this.configManager = new ConfigManager();
@@ -52,6 +53,11 @@ export class Monitor implements IMonitor {
     this.isRunning = true;
     this.startAutoReport();
     
+    // 如果启用了页面可见性统计，添加事件监听
+    if (this.configManager.getConfig().enablePageVisibility) {
+      this.setupVisibilityTracking();
+    }
+    
     if (this.configManager.isDebugMode()) {
       console.log(`[${SDK_NAME}] 监控已启动`);
     }
@@ -67,6 +73,12 @@ export class Monitor implements IMonitor {
     
     this.isRunning = false;
     this.stopAutoReport();
+    
+    // 移除页面可见性事件监听
+    if (this.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
+      this.visibilityChangeHandler = null;
+    }
     
     if (this.configManager.isDebugMode()) {
       console.log(`[${SDK_NAME}] 监控已停止`);
@@ -287,6 +299,22 @@ export class Monitor implements IMonitor {
       },
       ...this.configManager.getContext(),
     };
+  }
+
+  private setupVisibilityTracking(): void {
+    this.visibilityChangeHandler = () => {
+      const visibilityState = document.visibilityState;
+      this.report({
+        type: EventType.BEHAVIOR,
+        name: 'page_visibility',
+        data: {
+          state: visibilityState,
+          timestamp: Date.now()
+        }
+      });
+    };
+    
+    document.addEventListener('visibilitychange', this.visibilityChangeHandler);
   }
 }
 

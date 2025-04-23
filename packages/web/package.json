@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/web",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Web monitoring package for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -41,9 +41,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@dmhsq_monitor/core": "^1.0.11",
-    "@dmhsq_monitor/processor": "^1.0.11",
-    "@dmhsq_monitor/utils": "^1.0.11"
+    "@dmhsq_monitor/core": "^1.0.12",
+    "@dmhsq_monitor/processor": "^1.0.12",
+    "@dmhsq_monitor/utils": "^1.0.12"
   },
   "devDependencies": {},
   "changelog": {
@@ -127,6 +127,12 @@
       "改进整体性能和稳定性"
     ],
     "1.0.14": [
+      "升级所有依赖包版本",
+      "优化IP地址收集机制",
+      "提高错误处理和去重效率",
+      "改进整体性能和稳定性"
+    ],
+    "1.0.15": [
       "升级所有依赖包版本",
       "优化IP地址收集机制",
       "提高错误处理和去重效率",

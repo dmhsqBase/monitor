@@ -8,6 +8,7 @@ Web监控库，用于捕获浏览器环境下的各类性能指标和错误信�
 - 错误监控：JS异常、Promise拒绝、资源加载失败等
 - 请求监控：捕获XHR和Fetch请求的时间和状态
 - 用户行为：点击、滚动等用户交互行为收集
+- 页面可见性：统计页面可见性变化（可选）
 - 数据处理：支持数据去重、IP收集、错误聚合等高级功能
 
 ## 安装
@@ -26,9 +27,11 @@ import { WebMonitor } from '@dmhsq_monitor/web';
 // 创建并初始化监控实例
 const monitor = new WebMonitor({
   appId: 'your-app-id',
+  appToken: 'your-app-token',  // 新增：应用Token
   serverUrl: 'https://your-monitor-server.com',
   enablePerformance: true,
-  enableError: true
+  enableError: true,
+  enablePageVisibility: true  // 新增：启用页面可见性统计
 });
 
 // 启动监控
@@ -51,6 +54,7 @@ monitor.report({
 const monitor = new WebMonitor({
   // 基础配置
   appId: 'your-app-id',
+  appToken: 'your-app-token',  // 新增：应用Token
   serverUrl: 'https://your-monitor-server.com',
   debug: true,  // 启用调试模式
   
@@ -59,6 +63,7 @@ const monitor = new WebMonitor({
   enableError: true,  // 启用错误监控
   enableRequestMonitoring: true,  // 监控Ajax/Fetch请求
   enableBehaviorMonitoring: true,  // 监控用户行为
+  enablePageVisibility: true,  // 新增：启用页面可见性统计
   
   // 采样率配置
   errorSamplingRate: 1.0,  // 错误信息采样率
@@ -93,6 +98,7 @@ const monitor = new WebMonitor({
 ```javascript
 const monitor = new WebMonitor({
   appId: 'your-app-id',
+  appToken: 'your-app-token',  // 新增：应用Token
   serverUrl: 'https://your-monitor-server.com',
   enablePerformance: true
 });
@@ -117,6 +123,7 @@ monitor.start();
 ```javascript
 const monitor = new WebMonitor({
   appId: 'your-app-id',
+  appToken: 'your-app-token',  // 新增：应用Token
   serverUrl: 'https://your-monitor-server.com',
   enableError: true,
   // 错误处理增强
@@ -133,6 +140,24 @@ monitor.start();
 - 资源加载错误
 - AJAX/Fetch请求错误
 - 控制台错误
+
+### 页面可见性统计
+
+```javascript
+const monitor = new WebMonitor({
+  appId: 'your-app-id',
+  appToken: 'your-app-token',  // 新增：应用Token
+  serverUrl: 'https://your-monitor-server.com',
+  enablePageVisibility: true  // 启用页面可见性统计
+});
+
+monitor.start();
+```
+
+页面可见性统计会记录：
+- 页面可见性状态变化（visible/hidden）
+- 变化发生的时间戳
+- 用户切换标签页或最小化浏览器的行为
 
 ### 数据处理能力
 
@@ -182,6 +207,7 @@ processor.updateConfig({
 | 选项 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | appId | string | - | 应用ID（必填） |
+| appToken | string | - | 应用Token（可选） |
 | serverUrl | string | - | 服务端数据接收地址（必填） |
 | debug | boolean | false | 是否开启调试模式 |
 | enableError | boolean | true | 是否启用错误监控 |

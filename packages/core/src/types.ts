@@ -16,6 +16,8 @@ export interface MonitorConfig {
   maxCache?: number;
   /** 自定义上下文信息 */
   context?: Record<string, any>;
+  /** 是否统计页面可见性 */
+  enablePageVisibility?: boolean;
 }
 
 /**
