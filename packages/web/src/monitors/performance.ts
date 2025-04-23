@@ -94,6 +94,25 @@ export class PerformanceMonitor {
     }
 
     const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    
+    // 获取来源链接
+    let sourceLink = '';
+    try {
+      if (document.referrer) {
+        const referrerUrl = new URL(document.referrer);
+        // 如果是同域名，只记录路径
+        if (referrerUrl.hostname === window.location.hostname) {
+          sourceLink = referrerUrl.pathname;
+        } else {
+          // 如果是不同域名，记录完整URL
+          sourceLink = document.referrer;
+        }
+      }
+    } catch (e) {
+      // URL解析失败时，使用完整的referrer
+      sourceLink = document.referrer || '';
+    }
+
     const performanceData: PerformanceData = {
       loadTime: Number((timing.loadEventEnd - timing.startTime).toFixed(3)),
       domReadyTime: Number((timing.domComplete - timing.domInteractive).toFixed(3)),
@@ -106,7 +125,7 @@ export class PerformanceMonitor {
       url: window.location.href,
       referrer: document.referrer || 'direct',
       entryType: document.referrer ? 'navigation' : 'direct',
-      sourceLink: document.referrer ? new URL(document.referrer).pathname : ''
+      sourceLink
     };
 
     // 收集首次绘制和首次内容绘制时间 (如果可用)

@@ -6,7 +6,7 @@ export const PROCESSOR_NAME = 'DMHSQMonitorProcessor';
 /**
  * 处理器版本
  */
-export const PROCESSOR_VERSION = '1.0.21';
+export const PROCESSOR_VERSION = '1.0.22';
 
 /**
  * 默认重复数据检测时间窗口（毫秒）

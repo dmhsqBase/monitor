@@ -1,6 +1,6 @@
 {
   "name": "@dmhsq_monitor/core",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Core library for monitor system",
   "type": "module",
   "main": "dist/index.cjs.js",
@@ -38,7 +38,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@dmhsq_monitor/utils": "^1.0.21"
+    "@dmhsq_monitor/utils": "^1.0.22"
   },
   "devDependencies": {},
   "changelog": {
@@ -148,6 +148,11 @@
       "更新依赖包版本"
     ],
     "1.0.21": [
+      "优化事件处理机制",
+      "提升日志记录效率",
+      "更新依赖包版本"
+    ],
+    "1.0.22": [
       "优化事件处理机制",
       "提升日志记录效率",
       "更新依赖包版本"
