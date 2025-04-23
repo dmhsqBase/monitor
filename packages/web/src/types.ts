@@ -106,6 +106,10 @@ export interface PerformanceData {
    * 页面进入方式
    */
   entryType: 'navigation' | 'direct';
+  /**
+   * 来源页面路径
+   */
+  sourceLink: string;
 }
 
 /**

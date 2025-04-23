@@ -95,17 +95,18 @@ export class PerformanceMonitor {
 
     const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const performanceData: PerformanceData = {
-      loadTime: timing.loadEventEnd - timing.startTime,
-      domReadyTime: timing.domComplete - timing.domInteractive,
-      redirectTime: timing.redirectEnd - timing.redirectStart,
-      dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
-      tcpTime: timing.connectEnd - timing.connectStart,
-      ttfb: timing.responseStart - timing.requestStart,
-      responseTime: timing.responseEnd - timing.responseStart,
-      domContentLoadedTime: timing.domContentLoadedEventEnd - timing.startTime,
+      loadTime: Number((timing.loadEventEnd - timing.startTime).toFixed(3)),
+      domReadyTime: Number((timing.domComplete - timing.domInteractive).toFixed(3)),
+      redirectTime: Number((timing.redirectEnd - timing.redirectStart).toFixed(3)),
+      dnsTime: Number((timing.domainLookupEnd - timing.domainLookupStart).toFixed(3)),
+      tcpTime: Number((timing.connectEnd - timing.connectStart).toFixed(3)),
+      ttfb: Number((timing.responseStart - timing.requestStart).toFixed(3)),
+      responseTime: Number((timing.responseEnd - timing.responseStart).toFixed(3)),
+      domContentLoadedTime: Number((timing.domContentLoadedEventEnd - timing.startTime).toFixed(3)),
       url: window.location.href,
       referrer: document.referrer || 'direct',
-      entryType: document.referrer ? 'navigation' : 'direct'
+      entryType: document.referrer ? 'navigation' : 'direct',
+      sourceLink: document.referrer ? new URL(document.referrer).pathname : ''
     };
 
     // 收集首次绘制和首次内容绘制时间 (如果可用)
